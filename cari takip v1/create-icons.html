@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İkon Oluşturucu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        canvas {
+            border: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 15px;
+            background: #2c3e50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .instructions {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cari Takip İkon Oluşturucu</h1>
+    
+    <div class="instructions">
+        <p>Bu sayfa, manifest.json dosyası için gereken ikonları oluşturmanıza yardımcı olur.</p>
+        <ol>
+            <li>Aşağıdaki "İkonları Oluştur" düğmesine tıklayın.</li>
+            <li>Oluşturulan ikonların altındaki "İndirme" bağlantılarını kullanarak ikonları indirin.</li>
+            <li>İndirilen ikonları, projenizin "img" klasörüne yerleştirin.</li>
+        </ol>
+    </div>
+    
+    <button onclick="generateIcons()">İkonları Oluştur</button>
+    
+    <h2>192x192 İkon</h2>
+    <canvas id="canvas192" width="192" height="192"></canvas>
+    <div id="download192"></div>
+    
+    <h2>512x512 İkon</h2>
+    <canvas id="canvas512" width="512" height="512"></canvas>
+    <div id="download512"></div>
+    
+    <script>
+        function generateIcons() {
+            // 192x192 icon
+            const canvas192 = document.getElementById('canvas192');
+            const ctx192 = canvas192.getContext('2d');
+            
+            // Arka planı temizle
+            ctx192.fillStyle = '#2c3e50';
+            ctx192.fillRect(0, 0, 192, 192);
+            
+            // Orta daire
+            ctx192.fillStyle = '#3498db';
+            ctx192.beginPath();
+            ctx192.arc(96, 96, 70, 0, Math.PI * 2);
+            ctx192.fill();
+            
+            // Logo metni
+            ctx192.fillStyle = 'white';
+            ctx192.font = 'bold 65px Arial';
+            ctx192.textAlign = 'center';
+            ctx192.textBaseline = 'middle';
+            ctx192.fillText('CT', 96, 96);
+            
+            // İndirme linki oluştur
+            const link192 = document.createElement('a');
+            link192.download = 'icon-192x192.png';
+            link192.href = canvas192.toDataURL('image/png');
+            link192.textContent = 'icon-192x192.png İndir';
+            document.getElementById('download192').innerHTML = '';
+            document.getElementById('download192').appendChild(link192);
+            
+            // 512x512 icon
+            const canvas512 = document.getElementById('canvas512');
+            const ctx512 = canvas512.getContext('2d');
+            
+            // Arka planı temizle
+            ctx512.fillStyle = '#2c3e50';
+            ctx512.fillRect(0, 0, 512, 512);
+            
+            // Orta daire
+            ctx512.fillStyle = '#3498db';
+            ctx512.beginPath();
+            ctx512.arc(256, 256, 180, 0, Math.PI * 2);
+            ctx512.fill();
+            
+            // Logo metni
+            ctx512.fillStyle = 'white';
+            ctx512.font = 'bold 170px Arial';
+            ctx512.textAlign = 'center';
+            ctx512.textBaseline = 'middle';
+            ctx512.fillText('CT', 256, 256);
+            
+            // İndirme linki oluştur
+            const link512 = document.createElement('a');
+            link512.download = 'icon-512x512.png';
+            link512.href = canvas512.toDataURL('image/png');
+            link512.textContent = 'icon-512x512.png İndir';
+            document.getElementById('download512').innerHTML = '';
+            document.getElementById('download512').appendChild(link512);
+        }
+    </script>
+</body>
+</html>

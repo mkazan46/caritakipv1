@@ -1,0 +1,23 @@
+{
+  "name": "Cari Takip Sistemi",
+  "short_name": "Cari Takip",
+  "description": "Cari hesaplarınızı takip etmek için mobil uyumlu uygulama",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#2c3e50",
+  "icons": [
+    {
+      "src": "./img/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "./img/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

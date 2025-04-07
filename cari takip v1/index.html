@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#2c3e50">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Cari Takip Sistemi</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="img/icon-192x192.png">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <style>
+        /* Sayfa yüklenir yüklenmez flash etkisini önlemek için kritik CSS */
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden; /* Yatay taşmayı engelle */
+        }
+        .sidebar {
+            visibility: hidden; /* Sayfa yüklenmeden önce sidebar'ı gizle */
+        }
+        .js-loaded .sidebar {
+            visibility: visible; /* JavaScript yüklendiğinde sidebar'ı göster */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar Overlay - Geliştirilmiş -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+        
+        <!-- Mobil için kenardan kaydırma alanı -->
+        <div class="sidebar-swipe-area" id="sidebar-swipe-area"></div>
+        
+        <!-- Sidebar - Açılır/Kapanır -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Cari Takip</span>
+                </div>
+                <!-- Sidebar içindeki kapatma butonu (sadece mobil) -->
+                <button class="close-sidebar mobile-only" id="close-sidebar" aria-label="Menüyü kapat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active" data-page="anasayfa"><i class="fas fa-home"></i> <span>Anasayfa</span></li>
+                    <li data-page="cariler"><i class="fas fa-users"></i> <span>Cariler</span></li>
+                    <li data-page="islemler"><i class="fas fa-exchange-alt"></i> <span>İşlemler</span></li>
+                    <li data-page="raporlar"><i class="fas fa-chart-bar"></i> <span>Raporlar</span></li>
+                    <li data-page="ayarlar"><i class="fas fa-cog"></i> <span>Ayarlar</span></li>
+                </ul>
+            </nav>
+            <div class="user-info">
+                <img src="img/user.png" alt="Kullanıcı" class="avatar">
+                <div class="user-details">
+                    <span class="name">Yetkili Kullanıcı</span>
+                    <span class="role">Yönetici</span>
+                </div>
+            </div>
+        </aside>
+
+        <main class="content">
+            <header>
+                <div class="header-left">
+                    <button id="toggle-sidebar" aria-label="Menüyü aç/kapat">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 class="page-title">Anasayfa</h2>
+                </div>
+                <div class="header-right">
+                    <button class="search-toggle mobile-only" aria-label="Arama"><i class="fas fa-search"></i></button>
+                    <div class="search-box">
+                        <input type="text" placeholder="Arama yapın...">
+                    </div>
+                    <div class="notifications">
+                        <i class="fas fa-bell"></i>
+                        <span class="count">3</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Ana İçerik Alanı -->
+            <div class="pages">
+                <!-- Anasayfa -->
+                <section id="anasayfa" class="page active">
+                    <!-- Dashboard Kartları - Mobil Uyumlu -->
+                    <div class="dashboard-cards">
+                        <div class="card">
+                            <div class="card-content">
+                                <h3>Toplam Cari</h3>
+                                <div class="number" id="toplam-cari-sayisi">0</div>
+                            </div>
+                            <div class="card-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-content">
+                                <h3>Toplam Alacak</h3>
+                                <div class="number" id="toplam-alacak">₺0,00</div>
+                            </div>
+                            <div class="card-icon">
+                                <i class="fas fa-lira-sign"></i>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-content">
+                                <h3>Bakiyeli Cariler</h3>
+                                <div class="number" id="bakiyeli-cariler">0</div>
+                            </div>
+                            <div class="card-icon">
+                                <i class="fas fa-tasks"></i>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-content">
+                                <h3>Aylık İşlem</h3>
+                                <div class="number" id="aylik-islem-toplami">₺0,00</div>
+                            </div>
+                            <div class="card-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Mobil Hızlı İşlem Butonları -->
+                    <div class="mobile-only mt-mobile">
+                        <button class="btn btn-primary btn-block"><i class="fas fa-plus"></i> Yeni İşlem</button>
+                        <button class="btn btn-secondary btn-block"><i class="fas fa-search"></i> Cari Sorgula</button>
+                    </div>
+                    
+                    <!-- Dashboard Grafikleri - Mobil Uyumlu -->
+                    <div class="dashboard-charts">
+                        <!-- Son İşlemler Tablosu -->
+                        <div class="chart-container">
+                            <h3>Son İşlemler</h3>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Cari</th>
+                                            <th>Tarih</th>
+                                            <th>Tutar</th>
+                                            <th>Durum</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Mehmet Yılmaz</td>
+                                            <td>12.11.2023</td>
+                                            <td>₺1.250</td>
+                                            <td><span class="status paid">Ödendi</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ayşe Demir</td>
+                                            <td>10.11.2023</td>
+                                            <td>₺3.420</td>
+                                            <td><span class="status pending">Beklemede</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Ali Kaya</td>
+                                            <td>08.11.2023</td>
+                                            <td>₺850</td>
+                                            <td><span class="status paid">Ödendi</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Zeynep Şahin</td>
+                                            <td>05.11.2023</td>
+                                            <td>₺2.100</td>
+                                            <td><span class="status overdue">Gecikmiş</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        
+                        <!-- Grafik Gösterimi -->
+                        <div class="chart-container">
+                            <h3>Aylık İşlem Grafiği</h3>
+                            <div class="chart-placeholder">
+                                <i class="fas fa-chart-bar"></i>
+                                <p>Grafik verileri yükleniyor...</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Cariler Sayfası -->
+                <section id="cariler" class="page">
+                    <div class="page-header">
+                        <h2>Cari Hesaplar</h2>
+                        <div class="actions">
+                            <button class="btn btn-primary" id="yeniCariEkle"><i class="fas fa-plus"></i> Yeni Cari Ekle</button>
+                            <button class="btn btn-secondary"><i class="fas fa-filter"></i> Filtrele</button>
+                        </div>
+                    </div>
+                    
+                    <div class="table-container">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Cari ID</th>
+                                    <th>Ad Soyad / Firma</th>
+                                    <th>Telefon</th>
+                                    <th>E-posta</th>
+                                    <th>Bakiye</th>
+                                    <th>Son İşlem</th>
+                                    <th>İşlemler</th>
+                                </tr>
+                            </thead>
+                            <tbody id="cariListesi">
+                                <!-- JS ile doldurulacak -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                
+                <!-- İşlemler Sayfası -->
+                <section id="islemler" class="page">
+                    <div class="page-header">
+                        <h2>İşlem Yönetimi</h2>
+                        <div class="actions">
+                            <button class="btn btn-primary" id="yeniIslemEkle"><i class="fas fa-plus"></i> Yeni İşlem</button>
+                            <div class="dropdown">
+                                <button class="btn btn-secondary"><i class="fas fa-sort"></i> Sırala</button>
+                                <div class="dropdown-content">
+                                    <a href="#" data-sort="date">Tarihe Göre</a>
+                                    <a href="#" data-sort="amount">Tutara Göre</a>
+                                    <a href="#" data-sort="name">İsme Göre</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="tabs">
+                        <button class="tab-btn active" data-tab="tumIslemler">Tüm İşlemler</button>
+                        <button class="tab-btn" data-tab="tahsilatlar">Tahsilatlar</button>
+                        <button class="tab-btn" data-tab="odemeler">Ödemeler</button>
+                    </div>
+                    
+                    <div class="tab-content active" id="tumIslemler">
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>İşlem No</th>
+                                        <th>Cari</th>
+                                        <th>Tarih</th>
+                                        <th>Tür</th>
+                                        <th>Tutar</th>
+                                        <th>Açıklama</th>
+                                        <th>İşlemler</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="islemListesi">
+                                    <!-- JS ile doldurulacak -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <div class="tab-content" id="tahsilatlar">
+                        <!-- Tahsilatlar içeriği -->
+                    </div>
+                    
+                    <div class="tab-content" id="odemeler">
+                        <!-- Ödemeler içeriği -->
+                    </div>
+                </section>
+                
+                <!-- Raporlar Sayfası -->
+                <section id="raporlar" class="page">
+                    <div class="page-header">
+                        <h2>Raporlar</h2>
+                        <div class="actions">
+                            <button class="btn btn-primary" id="raporOlustur"><i class="fas fa-file-export"></i> Rapor Oluştur</button>
+                            <button class="btn btn-secondary"><i class="fas fa-print"></i> Yazdır</button>
+                        </div>
+                    </div>
+                    
+                    <div class="report-filters">
+                        <div class="filter-group">
+                            <label>Rapor Türü:</label>
+                            <select id="raporTuru">
+                                <option value="cari">Cari Durum Raporu</option>
+                                <option value="islem">İşlem Raporu</option>
+                                <option value="borc">Borç/Alacak Raporu</option>
+                                <option value="vade">Vade Analizi</option>
+                            </select>
+                        </div>
+                        <div class="filter-group">
+                            <label>Tarih Aralığı:</label>
+                            <input type="date" id="startDate">
+                            <input type="date" id="endDate">
+                        </div>
+                        <button class="btn btn-primary" id="filtreUygula">Uygula</button>
+                    </div>
+                    
+                    <div class="report-container" id="raporSonuclari">
+                        <div class="report-placeholder">
+                            <i class="fas fa-chart-pie"></i>
+                            <p>Rapor oluşturmak için yukarıdaki filtreleri kullanın</p>
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Ayarlar Sayfası -->
+                <section id="ayarlar" class="page">
+                    <div class="page-header">
+                        <h2>Sistem Ayarları</h2>
+                    </div>
+                    
+                    <div class="settings-container">
+                        <div class="settings-sidebar">
+                            <ul>
+                                <li class="active">Genel Ayarlar</li>
+                                <li>Kullanıcı Yönetimi</li>
+                                <li>Veri Yedekleme</li>
+                                <li>Görünüm</li>
+                            </ul>
+                        </div>
+                        <div class="settings-content">
+                            <h3>Genel Ayarlar</h3>
+                            
+                            <form class="settings-form">
+                                <div class="form-group">
+                                    <label>Şirket Adı:</label>
+                                    <input type="text" value="Cari Takip Ltd. Şti.">
+                                </div>
+                                <div class="form-group">
+                                    <label>Vergi Dairesi:</label>
+                                    <input type="text" value="Merkez">
+                                </div>
+                                <div class="form-group">
+                                    <label>Vergi Numarası:</label>
+                                    <input type="text" value="1234567890">
+                                </div>
+                                <div class="form-group">
+                                    <label>Para Birimi:</label>
+                                    <select>
+                                        <option selected>TL (₺)</option>
+                                        <option>USD ($)</option>
+                                        <option>EUR (€)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Otomatik Yedekleme:</label>
+                                    <div class="toggle-switch">
+                                        <input type="checkbox" id="autoBackup" checked>
+                                        <label for="autoBackup"></label>
+                                    </div>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary">Kaydet</button>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Pencereler -->
+    <div class="modal" id="yeniCariModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Yeni Cari Hesap Ekle</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="yeniCariForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cari Türü:</label>
+                            <select id="cariTuru">
+                                <option value="bireysel">Bireysel</option>
+                                <option value="kurumsal">Kurumsal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Cari Kodu:</label>
+                            <input type="text" id="cariKodu" placeholder="Otomatik oluştur">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ad Soyad / Firma:</label>
+                        <input type="text" id="cariAdi" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Telefon:</label>
+                            <input type="tel" id="cariTelefon">
+                        </div>
+                        <div class="form-group">
+                            <label>E-posta:</label>
+                            <input type="email" id="cariEposta">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Adres:</label>
+                        <textarea id="cariAdres"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Vergi Dairesi:</label>
+                            <input type="text" id="cariVergiDairesi">
+                        </div>
+                        <div class="form-group">
+                            <label>Vergi No / T.C. No:</label>
+                            <input type="text" id="cariVergiNo">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="iptalCari">İptal</button>
+                <button class="btn btn-primary" id="kaydetCari">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Cari Düzenleme Modal -->
+    <div class="modal" id="duzenleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Cari Hesap Düzenle</h3>
+                <span class="close-modal">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="duzenleCariForm">
+                    <input type="hidden" id="duzenleId">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Cari Türü:</label>
+                            <select id="duzenleCariTuru">
+                                <option value="bireysel">Bireysel</option>
+                                <option value="kurumsal">Kurumsal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Cari Kodu:</label>
+                            <input type="text" id="duzenleCariKodu" readonly>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ad Soyad / Firma:</label>
+                        <input type="text" id="duzenleCariAdi" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Telefon:</label>
+                            <input type="tel" id="duzenleCariTelefon">
+                        </div>
+                        <div class="form-group">
+                            <label>E-posta:</label>
+                            <input type="email" id="duzenleCariEposta">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Adres:</label>
+                        <textarea id="duzenleCariAdres"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Vergi Dairesi:</label>
+                            <input type="text" id="duzenleCariVergiDairesi">
+                        </div>
+                        <div class="form-group">
+                            <label id="duzenleCariVergiNoLabel">Vergi No / T.C. No:</label>
+                            <input type="text" id="duzenleCariVergiNo">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Mevcut Bakiye:</label>
+                        <input type="text" id="duzenleBakiye" readonly>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="iptalDuzenle">İptal</button>
+                <button class="btn btn-primary" id="kaydetDuzenle">Kaydet</button>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2023 Cari Takip Sistemi | v2.0.0 | <a href="#">Hakkında</a> | <a href="#">Destek</a></p>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/cari.js"></script>
+    <script src="js/islem.js"></script>
+    <script src="js/rapor.js"></script>
+    <script>
+        // Sayfa yüklendiğinde JS-loaded class ekle
+        document.addEventListener('DOMContentLoaded', function() {
+            document.body.classList.add('js-loaded');
+        });
+    </script>
+</body>
+</html>

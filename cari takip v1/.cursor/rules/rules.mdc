@@ -1,0 +1,35 @@
+---
+description: Cari Takip Sistemi proje kuralları
+globs: "*.{html,css,js}"
+alwaysApply: true
+---
+
+# Cari Takip Sistemi Geliştirme Kuralları
+
+- Uygulamanın giriş noktası olarak `index.html` kullanılacaktır
+- Tüm JavaScript kodları `js` klasörü altında olmalıdır
+- Stillendirme için `css` klasörü kullanılmalıdır
+- Veritabanı işlemleri için `db` klasörü oluşturulmalıdır
+- Tüm açıklamalar ve yorumlar Türkçe dilinde olmalıdır
+- Kod içerisindeki değişkenler tercihen İngilizce, arayüz metinleri ise Türkçe olmalıdır
+- Sunucu, `server.js` dosyası ile yerel olarak çalıştırılabilir
+- API istekleri için `/api` ön ekini kullanın
+- Yerel sunucu varsayılan olarak 3000 portunda çalışır
+
+## Mobil Tasarım Prensipleri
+
+- Tasarım "mobile-first" yaklaşımıyla geliştirilmelidir
+- Tüm sayfalar en az 320px genişliğindeki ekranlarda düzgün görüntülenmelidir
+- Dokunmatik arayüzler için butonlar en az 44px x 44px boyutunda olmalıdır
+- Mobil görünümde yan menü varsayılan olarak gizlenip hamburger menü ile açılabilmelidir
+- Tablolar mobil görünümde kaydırılabilir olmalıdır
+- Form elemanları mobil ekranlarda en az %70 genişliğe sahip olmalıdır
+- Yazı boyutları minimum 14px olmalıdır
+- Responsive breakpoint'ler: 
+  - Mobil: <576px
+  - Tablet: 576px-992px
+  - Masaüstü: >992px
+- Mobil görünümde yan menü (sidebar), içerik ile üst üste binmemeli, açılır kapanır olmalıdır
+- Mobil görünümde yan menü açıkken arka planda sayfa kaydırma engellenmelidir
+- Mobil cihazlarda performans için CSS transform ve opacity özelliklerini kullanın
+- Touch arayüzlerde swipe hareketleri için minimum 20px genişliğinde kenar dokunma alanı bırakın
